@@ -3,6 +3,7 @@ class Library:
     def __init__(self, list_of_books, library_name):
         self.list_of_books = list_of_books
         self.library_name = library_name
+        self.lend_dict = {}
 
 
     def display_book(self):
@@ -13,25 +14,62 @@ class Library:
             i = i + 1
             print("\tBook no. " + str(i) + " --> " + books)
 
+    def print_dict(self):
+        print("<<\tHere's the name of person(s) who lend the books and the book name(s)\t>>")
+        i = 1
+        print("-------------------------------------------------")
+        print("S.No\t\tBook Name\t\tLender's Name")
+        print("-------------------------------------------------")
+        for key in self.lend_dict:
+            print(str(i) + "\t\t\t" + key + "\t\t\t" + self.lend_dict[key])
 
-    def lend_book(self):  #who owns the book in dictionary
+
+    def add_dict(self, key, value):
+        self.lend_dict[key] = value
+        print("\nThe " + key + " book is issued by " + value + "\n")
+
+
+    def remove_dict(self, key):
+        del self.lend_dict[key]
+        print(self.lend_dict)
+
+    def lend_book(self):
         print("\nWhich book you want to lend from " + self.library_name + ":-")
         self.display_book()
-        print("\nPlease write the Book no. that you want to lend")
-        book_no = int(input("Please Enter Book no. ---> "))
-        self.list_of_books.pop(book_no - 1)
-        print("\nBook no. " + str(book_no) + " lend successfully")
+        print("\nYou need to provide the Book no. that you want to lend")
+        try:
+            book_no = int(input("Please Enter Book no. ---> "))
+            lender_name = input("Please provide your name.. -->")
+            book_name = list_of_books[book_no - 1]
+
+            self.add_dict(book_name, lender_name)
+
+            self.list_of_books.pop(book_no - 1)
+            print("\nBook no. " + str(book_no) + " lend successfully")
+        except ValueError:
+            print("\nPlease check the input that you write. You have to write the integer\n")
+            self.lend_book()
 
 
     def add_book(self):
         book_name = input("Enter Book Name that you want to add:- ")
         self.list_of_books.append(book_name)
-        print("\n Thanks for donating the " + book_name + "\t:)")
+        print("\n Thanks for donating the " + book_name + "\t")
 
     def return_book(self):
         book_name = input("Enter Book Name that you want to return:- ")
-        self.list_of_books.append(book_name)
-        print("\n" + book_name + "returned successfully. Thanks for lending the book. Come back again.")
+
+
+        for key in self.lend_dict:
+            if key == book_name:
+                self.remove_dict(key)
+                self.list_of_books.append(book_name)
+                print("\n" + book_name + " returned successfully. Thanks for lending the book. Come back again.")
+                break
+        print("\nThe " + book_name + " book is not lended. Please check the book name again\n")
+        self.print_dict()
+
+
 
 
 list_of_books = ["C Programming", "JAVA", "Python", "C++ Programming", "Ruby"]
@@ -44,15 +82,18 @@ if __name__ == '__main__':
     while True:
         print("\n\n\t===WELCOME TO THE SAGAR LIBRARY==\n")
         print("\n1. Available Books in the Library\n2. Lend the Book from Sagar Library\n3. Donate the Book to Sagar Libraary\n4. Return the Lend Book to the Sagar Library")
-        options = int(input("\nChoose Options that you are going to perform --->\t"))
 
-        if options == 1:
-            SagarLibrary.display_book()
-        elif options == 2:
-            SagarLibrary.lend_book()
-        elif options == 3:
-            SagarLibrary.add_book()
-        elif options == 4:
-            SagarLibrary.return_book()
-        else:
-            print("\nPlease!!! Choose the valid option\n")
+        try:
+            options = int(input("\nChoose Options that you are going to perform --->\t"))
+            if options == 1:
+                SagarLibrary.display_book()
+            elif options == 2:
+                SagarLibrary.lend_book()
+            elif options == 3:
+                SagarLibrary.add_book()
+            elif options == 4:
+                SagarLibrary.return_book()
+            else:
+                print("\nPlease!!! Choose the valid option\n")
+        except ValueError:
+            print("\nPlease check the input that you write. You have to write the integer\n")
